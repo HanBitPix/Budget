@@ -174,6 +174,13 @@ const UIController = (() => {
       document.querySelector(element).insertAdjacentHTML('beforeend', html);
     },
 
+    deleteListItem: (selectorID) => {
+
+      let el = document.getElementById(selectorID);
+
+      el.parentNode.removeChild(el);
+    },
+
     clearFields: () => {
       let fields, fieldsArr;
 
@@ -274,16 +281,16 @@ const controller = ((budgetCtrl, UICtrl) => {
       // 1. delete the item from the data structure
       budgetCtrl.deleteItem(type, ID);
       
-      // // 2. Delete the item from the UI
-      // UICtrl.deleteListItem(itemID);
+      // 2. Delete the item from the UI
+      UICtrl.deleteListItem(itemID);
       
-      // // 3. Update and show the new budget
-      // updateBudget();
+      // 3. Update and show the new budget
+      updateBudget();
       
       // // 4. Calculate and update percentages
       // updatePercentages();
     }
-};
+  };
 
   return {
     init: () => {
