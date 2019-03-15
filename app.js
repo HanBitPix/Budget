@@ -7,9 +7,21 @@ const budgetController = (() => {
       this.id = id;
       this.description = description;
       this.value = value;
+      this.percentage = -1;
+    }
+
+    calcPercentage(totalIncome){
+      if (totalIncome > 0){
+        this.percentage = Math.round((this.value / totalIncome) * 100);
+      } else {
+        this.percentage = -1;
+      }
+    }
+
+    getPercentage(){
+      return this.percentage;
     }
   }
-
   class Income {
     constructor(id, description, value){
       this.id = id;
@@ -95,6 +107,18 @@ const budgetController = (() => {
         data.percentage = -1;
       }
 
+    },
+
+    calculatePercentages: () => {
+      data.allItems.exp.forEach(current => {
+        current.calcPercentage(data.totals.inc);
+      });
+    },
+
+    getPercentages: () => {
+      let allPerc = data.allItems.exp.map(cur => cur.getPercentage());
+      
+      return allPerc;
     },
 
     getBudget: () => {
@@ -243,6 +267,18 @@ const controller = ((budgetCtrl, UICtrl) => {
     UICtrl.displayBudget(budget);
   };
 
+  const updatePercentages = () => {
+
+    // calculate percentages
+    budgetCtrl.calculatePercentages();
+
+    // read percentages from the budget controller
+    let percentages = budgetCtrl.getPercentages();
+
+    // update the ui with the new percentages
+    console.log(percentages);
+  };
+
   const ctrlAddItem = () => {
     let newItem;
 
@@ -261,6 +297,9 @@ const controller = ((budgetCtrl, UICtrl) => {
 
       // Calculate and Update Budget
       updateBudget();
+
+      // Calculate and update percentages
+      updatePercentages();
     }
 
   
@@ -284,11 +323,11 @@ const controller = ((budgetCtrl, UICtrl) => {
       // 2. Delete the item from the UI
       UICtrl.deleteListItem(itemID);
       
-      // 3. Update and show the new budget
+      // Update and show the new budget
       updateBudget();
       
-      // // 4. Calculate and update percentages
-      // updatePercentages();
+      // Calculate and update percentages
+      updatePercentages();
     }
   };
 
